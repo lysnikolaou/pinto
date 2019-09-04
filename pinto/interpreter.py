@@ -5,21 +5,12 @@ from pinto.parser import (
     AST, Program, Block, VarDecl, Type, NoOp, Compound, Parser, Assign, Var,
     BinOp, UnaryOp, Num
 )
-
-
-class NodeVisitor:
-    def visit(self, node: AST) -> int:
-        method_name = 'visit_' + type(node).__name__
-        visitor = getattr(self, method_name, self.generic_visit)
-        return visitor(node)
-
-    def generic_visit(self, node: AST):
-        raise Exception('No visit_{} method'.format(type(node).__name__))
+from pinto.visitor import NodeVisitor
 
 
 class Interpreter(NodeVisitor):
-    def __init__(self, parser: Parser) -> None:
-        self.parser = parser
+    def __init__(self, tree: AST) -> None:
+        self.tree = tree
         self.GLOBAL_SCOPE: Dict[str, int] = {}
 
     def visit_Program(self, node: Program) -> None:
@@ -85,7 +76,7 @@ class Interpreter(NodeVisitor):
         return node.value
 
     def interpret(self) -> Optional[Union[int, float]]:
-        tree = self.parser.parse()
+        tree = self.tree
         if tree is None:
             return -1
         return self.visit(tree)

@@ -20,12 +20,6 @@ class Block(AST):
         self.compound_statement = compound_statement
 
 
-class VarDecl(AST):
-    def __init__(self, var_node: AST, type_node: AST) -> None:
-        self.var_node = var_node
-        self.type_node = type_node
-
-
 class Type(AST):
     def __init__(self, token: Token) -> None:
         self.token = token
@@ -61,6 +55,12 @@ class Var(AST):
     def __init__(self, token: Token) -> None:
         self.token = token
         self.value = token.value
+
+
+class VarDecl(AST):
+    def __init__(self, var_node: Var, type_node: Type) -> None:
+        self.var_node = var_node
+        self.type_node = type_node
 
 
 class Assign(AST):

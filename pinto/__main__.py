@@ -2,6 +2,7 @@ import sys
 
 from pinto.lexer import Lexer
 from pinto.parser import Parser
+from pinto.symbol import SymbolTableBuilder
 from pinto.interpreter import Interpreter
 
 def main():
@@ -9,7 +10,11 @@ def main():
 
     lexer = Lexer(text)
     parser = Parser(lexer)
-    interpreter = Interpreter(parser)
+    tree = parser.parse()
+    stb = SymbolTableBuilder()
+    stb.visit(tree)
+    print(f'Symbol Table Contents:\n{stb.symtab}\n')
+    interpreter = Interpreter(tree)
     result = interpreter.interpret()
 
     for k, v in sorted(interpreter.GLOBAL_SCOPE.items()):
